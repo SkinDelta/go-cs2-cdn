@@ -1,0 +1,36 @@
+name: Daily Go Run & Push
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  build-run-commit:
+    runs-on: ubuntu-latest
+
+    permissions:
+        contents: write
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.23"
+
+      - name: Run
+        run: go run cmd/main.go
+
+      - name: Read manifestId.txt
+        id: manifestId
+        uses: juliangruber/read-file-action@v1
+        with:
+            path: manifest_id.txt
+
+      - name: Commit & push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+            commit_message: "manifest ${{ steps.manifestId.outputs.content }}"

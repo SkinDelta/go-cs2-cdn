@@ -21,27 +21,6 @@ func GenerateVPKList(vpkDir string, requiredPrefix string, vpkBaseDir string, ou
 	}
 	defer os.Remove(manifestPath) // Clean up the temporary manifest file
 
-	// **New: Log the first 5 lines of the manifest for verification**
-	f, err := os.Open(manifestPath)
-	if err != nil {
-		return fmt.Errorf("failed to open manifest for logging: %w", err)
-	}
-	defer f.Close()
-
-	scanner := bufio.NewScanner(f)
-	lineCount := 0
-	for scanner.Scan() {
-		if lineCount < 5 { // log first 5 lines
-			log.Printf("Manifest line %d: %s", lineCount+1, scanner.Text())
-			lineCount++
-		} else {
-			break
-		}
-	}
-	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("error reading manifest for logging: %w", err)
-	}
-
 	// Step 2: Parse the manifest to get fnumbers for required images
 	fnumbers, err := ParseVPKDir(manifestPath, requiredPrefix)
 	if err != nil {
@@ -140,7 +119,7 @@ func ParseVPKDir(vpkDirPath string, requiredPrefix string) ([]int, error) {
 			continue
 		}
 
-		log.Printf("Matched FilePath: %s", cleanPath)
+		//log.Printf("Matched FilePath: %s", cleanPath)
 		matchedLines++
 
 		// Extract fnumber from the fields
@@ -159,7 +138,7 @@ func ParseVPKDir(vpkDirPath string, requiredPrefix string) ([]int, error) {
 		}
 
 		if fnumber != 0 {
-			log.Printf("Extracted fnumber: %d from FilePath: %s", fnumber, cleanPath)
+			//log.Printf("Extracted fnumber: %d from FilePath: %s", fnumber, cleanPath)
 			fnumberSet[fnumber] = struct{}{}
 		} else {
 			log.Printf("No valid fnumber found in line: %s", line)

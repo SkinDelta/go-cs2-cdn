@@ -10,4 +10,4 @@ The build process is automated to run every 24 hours, check for changes in the s
 ## TODO
 - [ ] Add Go Tests
 - [ ] Add github actions cache
-- [ ] Add an OS check for tool dependencies
+- [x] Add an OS check for tool dependencies

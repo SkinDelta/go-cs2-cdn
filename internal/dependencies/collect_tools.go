@@ -19,8 +19,8 @@ type Tool struct {
 	Name            string
 	RepoOwner       string
 	RepoName        string
-	AssetNameSuffix string // Suffix to identify the correct asset
-	ExecutableName  string // Name of the executable after extraction
+	AssetNameSuffix string
+	ExecutableName  string
 }
 
 // List of tools to manage
@@ -85,12 +85,6 @@ func downloadAndInstallTool(tool Tool, toolsDir string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)
 	}
-
-	// Optional: If you have a GitHub token to increase rate limits, set it here
-	// token := os.Getenv("GITHUB_TOKEN")
-	// if token != "" {
-	// 	req.Header.Set("Authorization", "token "+token)
-	// }
 
 	resp, err := client.Do(req)
 	if err != nil {

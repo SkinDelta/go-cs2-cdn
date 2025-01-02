@@ -102,7 +102,6 @@ func ParseVPKDir(vpkDirPath string, requiredPrefix string) ([]int, error) {
 		fields := strings.Fields(line)
 		if len(fields) < 5 {
 			// Not enough fields to parse
-			//log.Printf("Skipping line (insufficient fields): %s", line)
 			continue
 		}
 
@@ -115,11 +114,8 @@ func ParseVPKDir(vpkDirPath string, requiredPrefix string) ([]int, error) {
 
 		// Check if the FilePath starts with the required prefix
 		if !strings.HasPrefix(cleanPath, normalizedPrefix) {
-			//log.Printf("Path does not match prefix: %s", cleanPath)
 			continue
 		}
-
-		//log.Printf("Matched FilePath: %s", cleanPath)
 		matchedLines++
 
 		// Extract fnumber from the fields
@@ -138,7 +134,6 @@ func ParseVPKDir(vpkDirPath string, requiredPrefix string) ([]int, error) {
 		}
 
 		if fnumber != 0 {
-			//log.Printf("Extracted fnumber: %d from FilePath: %s", fnumber, cleanPath)
 			fnumberSet[fnumber] = struct{}{}
 		} else {
 			log.Printf("No valid fnumber found in line: %s", line)

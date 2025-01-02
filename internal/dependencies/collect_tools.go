@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -75,9 +76,23 @@ func EnsureTools() error {
 	return nil
 }
 
+func checkOS() string {
+	switch runtime.GOOS {
+	case "windows":
+		return "windows"
+	case "darwin":
+		return "macos"
+	default:
+		return "linux"
+	}
+}
+
 // downloadAndInstallTool downloads the latest release asset matching the tool's AssetNameSuffix,
 // extracts it, and places the executable in the tools directory.
 func downloadAndInstallTool(tool Tool, toolsDir string) error {
+	// Determine the OS-specific asset name suffix
+	tool.AssetNameSuffix = strings.ReplaceAll(tool.AssetNameSuffix, "linux", checkOS())
+
 	// Step 1: Get the latest release
 	releaseURL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", tool.RepoOwner, tool.RepoName)
 	client := &http.Client{}

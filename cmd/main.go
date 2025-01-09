@@ -4,11 +4,13 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/SkinDelta/go-cs2-cdn/internal/cmdrunner"
 	"github.com/SkinDelta/go-cs2-cdn/internal/dependencies"
@@ -50,10 +52,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to find manifest file: %v", err)
 	}
-	if len(matches) == 0 {
-		log.Fatalf("No manifest file found in ./data/")
+	manifestFile, err := findNewestManifest(matches)
+	if err != nil {
+		log.Fatalf("Failed to pick newest manifest file: %v", err)
 	}
-	manifestFile := matches[0]
 
 	// Example file: data/manifest_2347770_5002689339188222421.txt
 	parts := strings.Split(manifestFile, "_")
@@ -249,4 +251,23 @@ func addImagesToCDN() {
 	if err := os.WriteFile(cdnListPath, updated, 0644); err != nil {
 		log.Fatalf("Error writing cdn.json: %v\n", err)
 	}
+}
+
+func findNewestManifest(files []string) (string, error) {
+	var newest string
+	var newestTime time.Time
+	for _, f := range files {
+		fi, err := os.Stat(f)
+		if err != nil {
+			return "", err
+		}
+		if fi.ModTime().After(newestTime) {
+			newestTime = fi.ModTime()
+			newest = f
+		}
+	}
+	if newest == "" {
+		return "", fmt.Errorf("no manifest files found")
+	}
+	return newest, nil
 }

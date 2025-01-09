@@ -30,4 +30,4 @@ go.work.sum
 # Keeps folders empty but remains as a placeholder
 tools/*
 data/game
-data/.DepotDownloader
+data/.DepotDownloader/*
